@@ -1,12 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  // Expect env like:
-  // REACT_APP_API_URL=https://team-task-manager-owts.onrender.com
-  // (backend should expose routes under /api)
-  baseURL: process.env.REACT_APP_API_URL
-    ? `${process.env.REACT_APP_API_URL}/api`
-    : '/api',
+  baseURL: process.env.REACT_APP_API_URL || '/api',
 });
 
 API.interceptors.request.use((config) => {
