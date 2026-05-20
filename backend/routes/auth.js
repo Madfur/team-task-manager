@@ -43,7 +43,10 @@ router.post(
       });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Server error' });
+
+      res.status(500).json({
+        error: err.message,
+      });
     }
   }
 );
@@ -80,7 +83,10 @@ router.post(
       });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Server error' });
+
+      res.status(500).json({
+        error: err.message,
+      });
     }
   }
 );
@@ -94,11 +100,7 @@ router.get('/me', require('../middleware/auth'), async (req, res) => {
     });
     res.json(user);
   } catch (err) {
-    console.error(err);
-
-    res.status(500).json({
-      error: err.message,
-    });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
