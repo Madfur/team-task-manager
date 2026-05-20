@@ -94,7 +94,11 @@ router.get('/me', require('../middleware/auth'), async (req, res) => {
     });
     res.json(user);
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message,
+    });
   }
 });
 
