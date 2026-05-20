@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(MEMBER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectMembers ProjectMember[]
+  assignedTasks  Task[]          @relation("AssignedTo")
+  createdTasks   Task[]          @relation("CreatedBy")
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members ProjectMember[]
+  tasks   Task[]
+}
+
+model ProjectMember {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  projectId   Int
+  projectRole ProjectRole @default(MEMBER)
+  joinedAt    DateTime    @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  projectId    Int
+  assignedToId Int?
+  createdById  Int
+
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignedTo User?   @relation("AssignedTo", fields: [assignedToId], references: [id])
+  createdBy  User    @relation("CreatedBy", fields: [createdById], references: [id])
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum ProjectRole {
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  OVERDUE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
