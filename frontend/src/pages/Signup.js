@@ -26,7 +26,14 @@ export default function Signup() {
       loginUser(res.data.token, res.data.user);
       navigate('/dashboard');
     } catch (err) {
-      const msg = err.response?.data?.error || err.response?.data?.errors?.[0]?.msg || 'Signup failed.';
+      console.log(err.response?.data);
+
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.errors?.[0]?.msg ||
+        JSON.stringify(err.response?.data) ||
+        "Signup failed.";
+
       setError(msg);
     } finally {
       setLoading(false);
